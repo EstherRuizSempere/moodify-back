@@ -16,7 +16,6 @@ $loginController = new LoginController();
 
 try {
     $user = $loginController->__invoke($email, $password);
-    //Devuelvo algo a la aplicación de angular (JSON)
     $response = [
         "status" => "success",
         "message" => "Usuario logueado correctamente",
@@ -24,7 +23,6 @@ try {
     ];
 
 } catch (Exception $error) {
-    //Devuelvo algo a la aplicación de angular (JSON)
     $response = [
         "status" => "error",
         "message" => $error->getMessage(),

@@ -62,7 +62,6 @@ class User
             "id" => $this->getId(),
             "name" => $this->getName(),
             "email" => $this->getEmail(),
-            "password" => $this->getPassword(),
         ];
     }
 }

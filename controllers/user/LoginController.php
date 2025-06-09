@@ -14,7 +14,10 @@ class LoginController {
             throw new Exception("Usuario o contraseña incorrectos");
         }
 
-        UserUtils::verifyPassword($password, $user->getPassword());
+        if(!UserUtils::verifyPassword($password, $user->getPassword()))
+        {
+            throw new Exception("Usuario o contraseña incorrectos");
+        }
 
         return $user;
     }

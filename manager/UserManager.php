@@ -1,5 +1,6 @@
 <?php
 include_once __DIR__ . '/../config/ConnectionDB.php';
+include_once __DIR__ . '/../entities/User.php';
 
 class UserManager
 {
@@ -43,6 +44,56 @@ class UserManager
 
     }
 
+    public function updateUser(User $user, bool $updatePassword = false)
+    {
+        if ($updatePassword) {
+            $sql = "UPDATE users SET name = :name, email = :email, password = :password WHERE id = :id";
+        } else {
+            $sql = "UPDATE users SET name = :name, email = :email WHERE id = :id";
+        }
+
+        try {
+            // Validaciones
+            if (!UserUtils::validateName($user->getName())) {
+                throw new Exception("El nombre no es válido ❌");
+            }
+            if (!UserUtils::validateEmail($user->getEmail())) {
+                throw new Exception("El email no es válido ❌");
+            }
+
+            $statement = $this->pdo->prepare($sql);
+            $statement->bindValue(":id", $user->getId());
+            $statement->bindValue(":name", $user->getName());
+            $statement->bindValue(":email", $user->getEmail());
+
+            if ($updatePassword) {
+                // Haseo la contraseña antes de almacenarla
+                $passwordHash = UserUtils::hashPassword($user->getPassword());
+                $statement->bindValue(":password", $passwordHash);
+            }
+
+            $statement->execute();
+            return $statement;
+        } catch (Exception $error) {
+            throw new Exception($error->getMessage());
+        }
+    }
+
+
+    public function deleteUserById(int $id)
+    {
+        $sql = "DELETE FROM users WHERE id = :id";
+
+        try {
+            $statement = $this->pdo->prepare($sql);
+            $statement->bindValue(":id", $id, PDO::PARAM_INT);
+            $statement->execute();
+        } catch (Exception $error) {
+            throw new Exception($error->getMessage());
+        }
+    }
+
+
     public function getUserById(int $id): User
     {
         $sql = "SELECT * FROM users WHERE id = :id";
@@ -67,7 +118,7 @@ class UserManager
 
     public function getUserByEmail(string $email): User
     {
-        $sql = "SELECT * FROM users WHERE email = :email";
+        $sql = "SELECT * FROM users WHERE LOWER(email) = LOWER(:email)";
 
         try {
             //Preparo la consulta
@@ -86,4 +137,22 @@ class UserManager
             throw new Exception($error->getMessage());
         }
     }
+
+    public function updatePasswordByEmail(string $email, string $hashedPassword)
+    {
+        $sql = "UPDATE users SET password = :password WHERE LOWER(email) = LOWER(:email)";
+
+        try {
+            $statement = $this->pdo->prepare($sql);
+            $statement->bindValue(":email", $email);
+            $statement->bindValue(":password", $hashedPassword);
+            $statement->execute();
+
+            return;
+        } catch (Exception $error) {
+            throw new Exception($error->getMessage());
+        }
+    }
+
+
 }
