@@ -61,4 +61,24 @@ class EmotionManager
 
         return $emotions;
     }
+
+    public function getEmotionStatsByUser(int $user_id): array
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT 
+            emotion,
+            COUNT(*) AS count,
+            DATE_FORMAT(fecha, '%Y-%m') AS month
+        FROM emotions
+        WHERE user_id = :user_id
+        GROUP BY month, emotion
+        ORDER BY month ASC, emotion ASC;
+    ");
+
+        $stmt->bindValue(":user_id", $user_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }

@@ -1,10 +1,12 @@
 <?php
-
+use utilities\CorsUtility;
 use utilities\CheckMethodUtility;
 
+include_once __DIR__ . '/../../utilities/CorsUtility.php';
 include_once __DIR__ . '/../../controllers/user/SaveEmotionController.php';
 include_once __DIR__ . '/../../utilities/CheckMethodUtility.php';
 
+CorsUtility::applyCors();
 CheckMethodUtility::checkPost();
 
 $user_id = $_POST["user_id"];

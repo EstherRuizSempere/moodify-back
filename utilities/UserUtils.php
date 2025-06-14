@@ -9,13 +9,34 @@ class UserUtils
         return hash("sha512", $password);
     }
 
-    //TODO Hacer función para hacer la doble verificación de la contraseña
+
 
     //Requisitos para crear la contraseña
-    public static function passwordDigits($password)
+    public static function validatePassword($password)
     {
-        return strlen($password >= 4);
+        // Mínimo 8 caracteres
+        if (strlen($password) < 8) {
+            throw new Exception("La contraseña debe tener al menos 8 caracteres 🛡️");
+        }
+
+        // Al menos un número
+        if (!preg_match('/[0-9]/', $password)) {
+            throw new Exception("La contraseña debe incluir al menos un número 🔢");
+        }
+
+        // Al menos una letra minúscula
+        if (!preg_match('/[a-z]/', $password)) {
+            throw new Exception("La contraseña debe incluir al menos una letra minúscula 🔠");
+        }
+
+        // Al menos una letra mayúscula
+        if (!preg_match('/[A-Z]/', $password)) {
+            throw new Exception("La contraseña debe incluir al menos una letra mayúscula 🔡");
+        }
+
+        return true;
     }
+
 
     public static function validateName($name)
     {

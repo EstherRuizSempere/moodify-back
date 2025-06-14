@@ -25,6 +25,9 @@ class UserManager
             if (!UserUtils::validateEmail($user->getEmail())) {
                 throw new Exception("El email no es válido ❌");
             }
+            if ($this->emailExists($user->getEmail())) {
+                throw new Exception("El email ya está registrado 🚫");
+            }
 
 
             //Haseo contraseña antes de almacenarla
@@ -43,6 +46,24 @@ class UserManager
         }
 
     }
+
+    public function emailExists(string $email): bool
+    {
+        $sql = "SELECT COUNT(*) FROM users WHERE LOWER(email) = LOWER(:email)";
+
+        try {
+            $statement = $this->pdo->prepare($sql);
+            $statement->bindValue(":email", $email);
+            $statement->execute();
+            $count = $statement->fetchColumn();
+
+            return $count > 0;
+
+        } catch (Exception $error) {
+            throw new Exception($error->getMessage());
+        }
+    }
+
 
     public function updateUser(User $user, bool $updatePassword = false)
     {

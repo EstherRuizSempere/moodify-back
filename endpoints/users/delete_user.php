@@ -1,10 +1,13 @@
 <?php
 
 use utilities\CheckMethodUtility;
+use utilities\CorsUtility;
 
+include_once __DIR__ . '/../../utilities/CorsUtility.php';
 include_once __DIR__ . '/../../utilities/CheckMethodUtility.php';
 include_once __DIR__ . '/../../controllers/user/DeleteUserController.php';
 
+CorsUtility::applyCors();
 CheckMethodUtility::checkPost();
 
 $user_id = $_POST['user_id'] ?? '';

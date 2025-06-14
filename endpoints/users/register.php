@@ -1,12 +1,13 @@
 <?php
 
 use utilities\CheckMethodUtility;
+use utilities\CorsUtility;
 
 include_once __DIR__ . '/../../controllers/user/RegisterController.php';
-
+include_once __DIR__ . '/../../utilities/CorsUtility.php';
 include_once __DIR__ . '/../../utilities/CheckMethodUtility.php';
 
-
+CorsUtility::applyCors();
 CheckMethodUtility::checkPost();
 
 $name = $_POST["name"];

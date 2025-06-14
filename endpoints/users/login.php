@@ -1,12 +1,12 @@
 <?php
-
+use utilities\CorsUtility;
 use utilities\CheckMethodUtility;
 
 include_once __DIR__ . '/../../controllers/user/LoginController.php';
-
+include_once __DIR__ . '/../../utilities/CorsUtility.php';
 include_once __DIR__ . '/../../utilities/CheckMethodUtility.php';
 
-
+CorsUtility::applyCors();
 CheckMethodUtility::checkPost();
 
 $password = $_POST["password"];

@@ -1,16 +1,28 @@
 <?php
 
-
+use utilities\CorsUtility;
 use utilities\CheckMethodUtility;
 
 include_once __DIR__ . '/../../controllers/user/ListEmotionController.php';
 include_once __DIR__ . '/../../utilities/CheckMethodUtility.php';
+include_once __DIR__ . '/../../utilities/CorsUtility.php';
 
+CorsUtility::applyCors();
 header('Content-Type: application/json; charset=utf-8');
 
 CheckMethodUtility::checkPost();
 
-$user_id = $_POST["user_id"];
+// Validar user_id
+$user_id = $_POST["user_id"] ?? '';
+
+if (empty($user_id)) {
+    echo json_encode([
+        "status" => "error",
+        "message" => "El campo user_id es obligatorio",
+        "data" => []
+    ]);
+    exit();
+}
 
 $listEmotionController = new ListEmotionController();
 
